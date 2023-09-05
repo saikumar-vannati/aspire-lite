@@ -1,5 +1,5 @@
 # aspire-lite
-Assignment for ASPIRE
+ASPIRE-LITE API
 
 # System Configuration
 
@@ -19,7 +19,7 @@ Open aspire-lite directory
 
 ```cd aspire-lite```
 
-Update .env file with valid database credentials. As of now default credentials are availalble .env file
+Update .env file with valid database credentials. As of now default credentials are availalble .env file. Make sure database is created in Mysql Server(database name is aspire in the following case)
 ```
 DB_DATABASE=aspire
 DB_USER=root
