@@ -1,10 +1,12 @@
-const models = require('../models')
+'use strict';
 
-const { responseFormatter, verifyToken } = require('../lib/utilities')
+const { responseFormatter, verifyToken } = require('../lib/utilities');
+const { getUserDetails } = require('../services/user');
 
 /**
  * user authentication middleware
- * Authenticates the user and pass the control flow to controller
+ * Authenticates the user and pass the control flow to
+ * next middleware of controller
  */
 exports.authenticate = async function authenticateUser (req, res, next) {
 
@@ -22,12 +24,7 @@ exports.authenticate = async function authenticateUser (req, res, next) {
 
     const { id } = decodedToken
 
-    const user = await models.user.findOne({
-        where: {
-            id: id
-        },
-        raw: true
-    })
+    const user = await getUserDetails({ id });
 
     // Authenticate user
     if (!user) return res.status(403).send(responseFormatter("", "unauthorized"));

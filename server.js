@@ -24,10 +24,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // user API's
-app.use("/api/user", user);
+app.use("/api", user);
 
 // admin API's
-app.use("/api/admin", admin);
+app.use("/admin/api", admin);
 
 // Set 404 error code for routes not availalble
 app.use("*", (req, res) => res.status(404).send("Route not found"))

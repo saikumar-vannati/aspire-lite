@@ -1,7 +1,8 @@
 require('dotenv').config()
 const t = require('tap')
 const assert = require('assert');
-const loanService = require('../services/loan')
+const loanService = require('../services/loan');
+const repayService = require('../services/repayment');
 const userService = require('../services/user');
 
 const generateRandomString = () => {
@@ -45,47 +46,47 @@ t.test("Testing Loan service", async (t) => {
         await loanService.approveLoan(latestLoanId);
     })
 
-    // getUserLoan
+    // getActiveLoan
     // User should be able to fetch the pending loans
     // Admin already approved the loan, the loan status must be in approved state
     await t.test("Testing get all pending loans for Admin", async (t) => {
 
-        const loan = await loanService.getUserLoan(userId);
+        const loan = await loanService.getActiveLoan(userId);
         assert.ok(loan, "Should return an array of pending terms");
         assert.ok(loan.length == 3, "Payment terms should be 3 since user opted for 3 terms");
-        assert.equal(loan[0].term_amount, '3.3333', "First term amount should be 3.3333")
-        assert.equal(loan[2].term_amount, '3.3334', "Last/Third term amount should be 3.3334")
+        assert.equal(loan[0].term_amount, '3.33', "First term amount should be 3.33")
+        assert.equal(loan[2].term_amount, '3.34', "Last/Third term amount should be 3.34")
     });
 
 
     await t.test("Testing get current pending term and payment", async (t) => {
 
-        let term = await loanService.getTermAmount(userId);
+        let term = await repayService.getTermAmount(userId);
 
         assert.ok(term, "Should return first term details");
         assert.equal(term.term_number, 1, "Should be first term since no payment is done yet")
-        assert.equal(term.amount, 33333, "First term amount should be 3.3333") // Storing amount in database by multiplying it by 10^4
+        assert.equal(term.amount, 333, "First term amount should be 3.33") // Storing amount in database by multiplying it by 10^2
 
         // Paying for first term
-        await loanService.repayment(term)
+        await repayService.repayment(term)
 
-        term = await loanService.getTermAmount(userId);
+        term = await repayService.getTermAmount(userId);
         assert.ok(term, "Should return second term details");
         assert.equal(term.term_number, 2, "Should be second term since first payment is already done")
-        assert.equal(term.amount, 33333, "second term amount should be 3.3333")
+        assert.equal(term.amount, 333, "second term amount should be 3.33")
 
         // Paying for second term
-        await loanService.repayment(term)
+        await repayService.repayment(term)
 
-        term = await loanService.getTermAmount(userId);
+        term = await repayService.getTermAmount(userId);
         assert.ok(term, "Should return third/last term details");
         assert.equal(term.term_number, 3, "Should be third/last term since first payment is already done")
-        assert.equal(term.amount, 33334, "third/laste term amount should be 3.3334")
+        assert.equal(term.amount, 334, "third/laste term amount should be 3.34")
 
         // Paying for third/last term
-        await loanService.repayment(term)
+        await repayService.repayment(term)
 
-        term = await loanService.getTermAmount(userId);
+        term = await repayService.getTermAmount(userId);
         assert.equal(term, null, "Shouldn't be any pending term as loan is fully paid")
     });
 })

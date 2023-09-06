@@ -1,19 +1,24 @@
+/**
+ * Added Tests for authentication middleware
+ */
+
 const t = require('tap')
 const { mock } = require('node:test')
 const assert = require('assert');
 
-t.test("Testing Authenticator service", async (t) => {
+t.test("Testing Authenticator Middleware", async (t) => {
 
     t.test("Testing Successful authentication", async (t) => {
 
         // Mocking user models
-        const { authenticate } = t.mock('../services/authenticate', {
-            '../models': { user: { findOne: () => {
+        const { authenticate } = t.mock('../middlewares/authenticate', {
+            '../services/user': { getUserDetails: () => {
                 return {
                     id: 1,
                     username: "saikumar.vannati",
                     password: "some-rand-string"
-                }}}}
+                }}
+            }
         });
 
         process.env.SECRET_KEY = "random_key_123456789011121314151671181920"
@@ -34,8 +39,14 @@ t.test("Testing Authenticator service", async (t) => {
     t.test("Testing 401 unauthorized - No token provided", async (t) => {
 
         // Mocking user models
-        const { authenticate } = t.mock('../services/authenticate', {
-            '../models': { user: { findOne: () => 0}}
+        const { authenticate } = t.mock('../middlewares/authenticate', {
+            '../services/user': { getUserDetails: () => {
+                return {
+                    id: 1,
+                    username: "saikumar.vannati",
+                    password: "some-rand-string"
+                }}
+            }
         });
 
         process.env.SECRET_KEY = "random_key_123456789011121314151671181920"
@@ -61,8 +72,14 @@ t.test("Testing Authenticator service", async (t) => {
     t.test("Testing 401 unauthorized - Invalid JWT provided", async (t) => {
 
         // Mocking user models
-        const { authenticate } = t.mock('../services/authenticate', {
-            '../models': { user: { findOne: () => 0}}
+        const { authenticate } = t.mock('../middlewares/authenticate', {
+            '../services/user': { getUserDetails: () => {
+                return {
+                    id: 1,
+                    username: "saikumar.vannati",
+                    password: "some-rand-string"
+                }}
+            }
         });
 
         process.env.SECRET_KEY = "random_key_123456789011121314151671181920"
@@ -90,8 +107,11 @@ t.test("Testing Authenticator service", async (t) => {
     t.test("Testing 403 Forbidden - Invalid User", async (t) => {
 
         // Mocking user models
-        const { authenticate } = t.mock('../services/authenticate', {
-            '../models': { user: { findOne: () => null}}
+        const { authenticate } = t.mock('../middlewares/authenticate', {
+            '../services/user': { getUserDetails: () => {
+                    return null
+                }
+            }
         });
 
         process.env.SECRET_KEY = "random_key_123456789011121314151671181920"

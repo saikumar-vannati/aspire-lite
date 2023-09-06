@@ -2,6 +2,7 @@
 
 const models = require('../models');
 const { generateHash } = require('../lib/utilities');
+const { getActiveLoan } = require('./loan');
 
 /**
  * 
@@ -31,4 +32,12 @@ exports.createUser = async function createUser(username, password) {
     const hashedPassword = generateHash(password);
 
     await models.user.create({ username, password: hashedPassword });
+}
+
+exports.hasActiveLoan = async function hasActiveLoan(userId) {
+
+    // Get pending loan details for the user
+    const userLoan = await getActiveLoan(userId);
+
+    return userLoan.length > 0 ? true : false
 }

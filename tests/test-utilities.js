@@ -1,3 +1,7 @@
+/**
+ * Added tests for Utilities
+ */
+
 const { test } = require("node:test")
 const assert = require("assert")
 
@@ -5,11 +9,11 @@ const utilities = require('../lib/utilities');
 
 test("Test Split Equated Installments", async (t) => {
 
-    let equated = utilities.splitLoanAmount(500, 2)
+    let equated = utilities.equatedInstallments(500, 2)
     assert.ok(equated, "Should return list of equated installments")
     assert.deepEqual(equated, [250, 250], "Should be list of equated installments")
 
-    equated = utilities.splitLoanAmount(100000, 3)
+    equated = utilities.equatedInstallments(100000, 3)
     assert.ok(equated, "Should return list of equated installments")
     assert.deepEqual(equated, [33333, 33333, 33334], `Should be list of equated installments except last element
         in the list`)
